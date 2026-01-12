@@ -33,7 +33,7 @@ describe('UsersController', () => {
   });
 
   it('should create a user', () => {
-    const createUserDto: CreateUserDto = { name: 'John Doe', role: 'ENGINEER', status: 'ACTIVE' };
+    const createUserDto: CreateUserDto = { name: 'John Doe', role: 'ENGINEER', status: 'ACTIVE', email: 'john@example.com' };
     const createdUser = controller.create(createUserDto);
     expect(createdUser).toEqual({ id: expect.any(Number), ...createUserDto });
   });

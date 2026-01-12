@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService, User } from './users.service';
+import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -12,7 +13,7 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
 
-    const mockUsers: User[] = [
+    const mockUsers = [
       { id: 1, name: 'Alice', role: 'ENGINEER', status: 'ACTIVE' },
       { id: 2, name: 'Bob', role: 'ADMIN', status: 'INACTIVE' },
       { id: 3, name: 'Charlie', role: 'INTERN', status: 'ACTIVE' },
@@ -56,10 +57,10 @@ describe('UsersService', () => {
     expect(user?.id).toBe(2);
   })
 
-  it('should return undefined for non-existing user id', () => {
-    const user = service.findOne(999);
-    expect(user).toBeUndefined();
-  });
+  it('should throw error if user not found by id', () => {
+    const id = 999;
+    expect(() => service.findOne(id)).toThrow(NotFoundException);
+  })
 
   it('should update the user based on id', () => {
     const user = service.findOne(1);
@@ -72,7 +73,7 @@ describe('UsersService', () => {
   })
 
   it('should create a new user', () => {
-    const newUserDto: CreateUserDto = { name: 'David', role: 'ADMIN', status: 'ACTIVE' };
+    const newUserDto: CreateUserDto = { name: 'David', role: 'ADMIN', status: 'ACTIVE', email: 'david@example.com' };
     const createdUser = service.create(newUserDto);
     expect(createdUser.name).toEqual(newUserDto.name);
   })

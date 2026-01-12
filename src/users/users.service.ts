@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,  NotFoundException  } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -15,6 +15,9 @@ export class UsersService {
         let finalUsers = this.users;
         if (role) {
             finalUsers = finalUsers.filter(user => user.role === role);
+            if (finalUsers.length === 0) {
+                throw new NotFoundException(`No users found with role: ${role}`);
+            }
         }
         if (status) {
             finalUsers = finalUsers.filter(user => user.status === status);
@@ -23,7 +26,11 @@ export class UsersService {
     }
 
     findOne(id: number) {
-        return this.users.find(user => user.id === id);
+        const user = this.users.find(user => user.id === id);
+        if (!user) {
+            throw new NotFoundException(`User with ID ${id} not found`);
+        }
+        return user;
     }
 
     create(createUserDto: CreateUserDto) {
