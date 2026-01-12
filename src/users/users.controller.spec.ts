@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { mock } from 'node:test';
+import { CreateUserDto } from './dto/create-user.dto';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -28,25 +28,27 @@ describe('UsersController', () => {
   });
 
   it('should return user by id for findOne', () => {
-    const userId = '1';
+    const userId = 1;
     expect(controller.findOne(userId)).toEqual(mockUsers[0]);
   });
 
   it('should create a user', () => {
-    const createUserDto = { name: 'John Doe', role: 'ENGINEER', status: 'ACTIVE' };
+    const createUserDto: CreateUserDto = { name: 'John Doe', role: 'ENGINEER', status: 'ACTIVE' };
     const createdUser = controller.create(createUserDto);
     expect(createdUser).toEqual({ id: expect.any(Number), ...createUserDto });
   });
 
   it('should update a user', () => {
-    const userId = '123';
+    const userId = 1;
     const updateUserDto = { name: 'Jane Doe' };
-    expect(controller.update(userId, updateUserDto)).toEqual({ id: userId, ...updateUserDto });
+    const updatedUser = controller.update(userId, updateUserDto);
+    expect(updatedUser?.name).toEqual('Jane Doe');
   });
 
   it('should remove a user', () => {
-    const userId = '123';
-    expect(controller.remove(userId)).toEqual({ id: userId });
+    const userId = 1;
+   const removedUser = controller.remove(userId);
+    expect(removedUser?.id).toEqual(userId);
+    expect(removedUser?.status).toBe('DELETED');
   });
-
 });

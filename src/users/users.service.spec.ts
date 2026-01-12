@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService, User } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -52,7 +53,7 @@ describe('UsersService', () => {
   it('should return specific user by id', () => {
     const user = service.findOne(2);
     expect(user).toBeDefined();
-    expect(user.id).toBe(2);
+    expect(user?.id).toBe(2);
   })
 
   it('should return undefined for non-existing user id', () => {
@@ -63,22 +64,22 @@ describe('UsersService', () => {
   it('should update the user based on id', () => {
     const user = service.findOne(1);
     expect(user).toBeDefined();
-    expect(user.name).toBe('Alice');
+    expect(user?.name).toBe('Alice');
 
     const updatedUser = service.update(1, {name: 'Alice Updated'});
-    const updatedName = updatedUser.name;
+    const updatedName = updatedUser?.name;
     expect(updatedName).toBe('Alice Updated');
   })
 
   it('should create a new user', () => {
-    const newUserDto = { name: 'David', role: 'ADMIN', status: 'ACTIVE' };
+    const newUserDto: CreateUserDto = { name: 'David', role: 'ADMIN', status: 'ACTIVE' };
     const createdUser = service.create(newUserDto);
     expect(createdUser.name).toEqual(newUserDto.name);
   })
 
   it('should delete a user', () => {
     const userIdToDelete = 2;
-    const deletedUser = service.delete(userIdToDelete, { status: 'DELETED' });
+    const deletedUser = service.delete(userIdToDelete);
     expect(deletedUser?.status).toBe('DELETED');
   });
 });

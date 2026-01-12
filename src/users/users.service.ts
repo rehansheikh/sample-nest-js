@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-
-export interface User {
-    id?: number;
-    name: string;
-    role: 'INTERN' | 'ADMIN' | 'ENGINEER';
-    status: string;
-}
 @Injectable()
 export class UsersService {
-    private users: User[] = [
+    private users = [
         { id: 1, name: 'Alice', role: 'ENGINEER', status: 'ACTIVE' },
         { id: 2, name: 'Bob', role: 'ADMIN', status: 'INACTIVE' },
         { id: 3, name: 'Charlie', role: 'INTERN', status: 'ACTIVE' },
@@ -31,14 +26,14 @@ export class UsersService {
         return this.users.find(user => user.id === id);
     }
 
-    create(createUserDto: User) {
+    create(createUserDto: CreateUserDto) {
         const id = this.users.length + 1;
         const newUser = { id: id, ...createUserDto };
         this.users.push(newUser);
         return newUser;
     }
-    
-    update(id: number, updateUserDto: Partial<User>) {
+
+    update(id: number, updateUserDto: UpdateUserDto) {
         const userIndex = this.users.findIndex(user => user.id === id);
         if (userIndex === -1) {
             return null;
@@ -52,7 +47,7 @@ export class UsersService {
         if (userIndex === -1) {
             return null;
         }
-        this.users[userIndex] = { ...this.users[userIndex], status: 'INACTIVE' };
+        this.users[userIndex] = { ...this.users[userIndex], status: 'DELETED' };
         return this.users[userIndex];
     }
 }
